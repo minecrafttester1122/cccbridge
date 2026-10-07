@@ -18,7 +18,14 @@ public class TargetBlockDisplayTarget extends DisplayBoardTarget {
     public void acceptFlapText(int offset, List<List<MutableComponent>> text, DisplayLinkContext context) {
         if (!(context.getTargetBlockEntity() instanceof TargetBlockEntity target))
             return;
-        Terminal term = target.getPeripheral(null).term;
+
+        var peripheral = target.getPeripheral(null);
+        if (peripheral == null)
+            return;
+
+        Terminal term = peripheral.term;
+        if (term == null)
+            return;
 
         List<String> source = new ArrayList<>();
 
@@ -49,7 +56,13 @@ public class TargetBlockDisplayTarget extends DisplayBoardTarget {
         if (!(block instanceof TargetBlockEntity targetBlock))
             return new DisplayTargetStats(1, 1, this);
 
-        Terminal term = targetBlock.getPeripheral(null).term;
+        var peripheral = targetBlock.getPeripheral(null);
+        if (peripheral == null)
+            return new DisplayTargetStats(1, 1, this);
+
+        Terminal term = peripheral.term;
+        if (term == null)
+            return new DisplayTargetStats(1, 1, this);
 
         return new DisplayTargetStats(term.getHeight(), term.getWidth(), this);
     }
