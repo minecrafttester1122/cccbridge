@@ -18,12 +18,17 @@ import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
 
 public class TargetBlockEntity extends BlockEntity implements PeripheralBlockEntity {
+    private static final int DEFAULT_WIDTH = 32;
+    private static final int DEFAULT_HEIGHT = 8;
+
     private TargetBlockPeripheral peripheral;
-    private int width = 32;
-    private int height = 8;
+    private int width = DEFAULT_WIDTH;
+    private int height = DEFAULT_HEIGHT;
 
     public TargetBlockEntity(BlockPos pos, BlockState state) {
         super((BlockEntityType<TargetBlockEntity>) CCCRegistries.TARGET_BLOCK_ENTITY.get(), pos, state);
+        this.width = DEFAULT_WIDTH;
+        this.height = DEFAULT_HEIGHT;
     }
 
     public int getWidth() {
@@ -41,16 +46,21 @@ public class TargetBlockEntity extends BlockEntity implements PeripheralBlockEnt
     }
 
     public @NotNull TargetBlockPeripheral getPeripheral(@Nullable Direction side) {
-        if (peripheral == null)
-            peripheral = new TargetBlockPeripheral(this, getWidth(), getHeight());
+        if (peripheral == null) {
+            int safeWidth = Math.max(1, width > 0 ? width : DEFAULT_WIDTH);
+            int safeHeight = Math.max(1, height > 0 ? height : DEFAULT_HEIGHT);
+            peripheral = new TargetBlockPeripheral(this, safeWidth, safeHeight);
+        }
 
         return peripheral;
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.@NonNull Provider registries) {
-        width = tag.getInt("width");
-        height = tag.getInt("height");
+        width = tag.contains("width") ? tag.getInt("width") : DEFAULT_WIDTH;
+        height = tag.contains("height") ? tag.getInt("height") : DEFAULT_HEIGHT;
+        if (width < 1) width = DEFAULT_WIDTH;
+        if (height < 1) height = DEFAULT_HEIGHT;
         super.loadAdditional(tag, registries);
     }
 

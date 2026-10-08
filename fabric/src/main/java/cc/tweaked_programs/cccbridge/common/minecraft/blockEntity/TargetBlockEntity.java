@@ -11,12 +11,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TargetBlockEntity extends BlockEntity implements PeripheralBlockEntity {
+    private static final int DEFAULT_WIDTH = 32;
+    private static final int DEFAULT_HEIGHT = 8;
+
     private TargetBlockPeripheral peripheral;
-    private int width = 32;
-    private int height = 8;
+    private int width = DEFAULT_WIDTH;
+    private int height = DEFAULT_HEIGHT;
 
     public TargetBlockEntity(BlockPos pos, BlockState state) {
         super((BlockEntityType<TargetBlockEntity>) CCCRegistries.TARGET_BLOCK_ENTITY.get(), pos, state);
+        this.width = DEFAULT_WIDTH;
+        this.height = DEFAULT_HEIGHT;
     }
 
     public int getWidth() {
@@ -27,15 +32,13 @@ public class TargetBlockEntity extends BlockEntity implements PeripheralBlockEnt
         return height;
     }
 
-    public void afterResize(int width, int height) {
-        this.width = width;
-        this.height = height;
-        setChanged();
-    }
-
     public @NotNull TargetBlockPeripheral getPeripheral(@Nullable Direction side) {
-        if (peripheral == null)
-            peripheral = new TargetBlockPeripheral(this, getWidth(), getHeight());
+        if (peripheral == null) {
+            int safeWidth = Math.max(1, width > 0 ? width : DEFAULT_WIDTH);
+            int safeHeight = Math.max(1, height > 0 ? height : DEFAULT_HEIGHT);
+            peripheral = new TargetBlockPeripheral(this);
+        }
+
         return peripheral;
     }
 }
