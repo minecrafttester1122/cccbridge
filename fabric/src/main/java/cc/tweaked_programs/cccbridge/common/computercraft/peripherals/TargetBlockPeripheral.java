@@ -21,10 +21,11 @@ public class TargetBlockPeripheral implements TweakedPeripheral<TargetBlockEntit
         return 1.2D;
     }
 
-    public final Terminal term = new Terminal(32, 8, true);
+    public final Terminal term;
 
-    public TargetBlockPeripheral(TargetBlockEntity be) {
+    public TargetBlockPeripheral(TargetBlockEntity be, int width, int height) {
         this.be = be;
+        this.term = new Terminal(width, height, true);
     }
 
     /**
@@ -40,6 +41,7 @@ public class TargetBlockPeripheral implements TweakedPeripheral<TargetBlockEntit
             throw new LuaException("The width and height of the terminal must be bigger than zero.");
 
         term.resize(width, height);
+        be.afterResize(width, height);
     }
 
     /**
