@@ -23,8 +23,6 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static dev.kleinbox.cccbridge.common.CCCRegistries.BLOCK_ENTITIES;
 
@@ -32,7 +30,6 @@ import static dev.kleinbox.cccbridge.common.CCCRegistries.BLOCK_ENTITIES;
 @EventBusSubscriber(modid = CCCBridge.MOD_ID)
 public class CCCBridge {
     public static final String MOD_ID = "cccbridge";
-    //public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     public CCCBridge(IEventBus eventBus) {
         CCCRegistries.register(eventBus);
@@ -41,7 +38,7 @@ public class CCCBridge {
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
     public static void clientInit(FMLClientSetupEvent event) {
-        var ignored = CCConfig.CONFIG; // Just needs to be touched soon-ish for mcqoy to work
+        var ignored = CCConfig.CONFIG;
         if (ModList.get().isLoaded("mcqoy"))
             return;
 
@@ -60,13 +57,16 @@ public class CCCBridge {
 
     @SubscribeEvent
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
+        System.out.println("[cccbridge] Registering PeripheralCapability handlers...");
         BLOCK_ENTITIES.getEntries().forEach((entry) -> {
             event.registerBlockEntity(
                     PeripheralCapability.get(),
                     entry.get(),
                     (be, side) -> {
-                        if (be instanceof PeripheralBlockEntity provider)
+                        if (be instanceof PeripheralBlockEntity provider) {
+                            System.out.println("[cccbridge] Capability lookup for " + be.getClass().getSimpleName() + " side=" + side);
                             return provider.getPeripheral(side);
+                        }
                         return null;
                     }
             );

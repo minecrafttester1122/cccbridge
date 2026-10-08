@@ -15,6 +15,9 @@ import org.jetbrains.annotations.Nullable;
  * @version 1.3
  */
 public class TargetBlockPeripheral implements TweakedPeripheral<TargetBlockEntity> {
+    private static final int DEFAULT_WIDTH = 32;
+    private static final int DEFAULT_HEIGHT = 8;
+
     private final TargetBlockEntity be;
 
     public static double getVersion() {
@@ -23,9 +26,16 @@ public class TargetBlockPeripheral implements TweakedPeripheral<TargetBlockEntit
 
     public final Terminal term;
 
+    public TargetBlockPeripheral(TargetBlockEntity be) {
+        this(be, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+    }
+
     public TargetBlockPeripheral(TargetBlockEntity be, int width, int height) {
         this.be = be;
-        this.term = new Terminal(width, height, true);
+        int safeWidth = width > 0 ? width : DEFAULT_WIDTH;
+        int safeHeight = height > 0 ? height : DEFAULT_HEIGHT;
+        this.term = new Terminal(safeWidth, safeHeight, true);
+        System.out.println("[cccbridge] Target peripheral created: width=" + safeWidth + ", height=" + safeHeight);
     }
 
     /**

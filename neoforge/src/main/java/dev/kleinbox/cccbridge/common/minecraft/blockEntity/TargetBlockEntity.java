@@ -47,11 +47,11 @@ public class TargetBlockEntity extends BlockEntity implements PeripheralBlockEnt
 
     public @NotNull TargetBlockPeripheral getPeripheral(@Nullable Direction side) {
         if (peripheral == null) {
-            int safeWidth = Math.max(1, width > 0 ? width : DEFAULT_WIDTH);
-            int safeHeight = Math.max(1, height > 0 ? height : DEFAULT_HEIGHT);
+            int safeWidth = width > 0 ? width : DEFAULT_WIDTH;
+            int safeHeight = height > 0 ? height : DEFAULT_HEIGHT;
             peripheral = new TargetBlockPeripheral(this, safeWidth, safeHeight);
+            System.out.println("[cccbridge] Target peripheral attached for block at " + worldPosition + ": width=" + safeWidth + ", height=" + safeHeight);
         }
-
         return peripheral;
     }
 
