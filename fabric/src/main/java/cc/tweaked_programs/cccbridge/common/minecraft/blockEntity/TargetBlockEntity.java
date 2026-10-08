@@ -12,14 +12,30 @@ import org.jetbrains.annotations.Nullable;
 
 public class TargetBlockEntity extends BlockEntity implements PeripheralBlockEntity {
     private TargetBlockPeripheral peripheral;
+    private int width = 32;
+    private int height = 8;
 
     public TargetBlockEntity(BlockPos pos, BlockState state) {
         super((BlockEntityType<TargetBlockEntity>) CCCRegistries.TARGET_BLOCK_ENTITY.get(), pos, state);
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void afterResize(int width, int height) {
+        this.width = width;
+        this.height = height;
+        setChanged();
+    }
+
     public @NotNull TargetBlockPeripheral getPeripheral(@Nullable Direction side) {
         if (peripheral == null)
-            peripheral = new TargetBlockPeripheral(this);
+            peripheral = new TargetBlockPeripheral(this, getWidth(), getHeight());
         return peripheral;
     }
 }
